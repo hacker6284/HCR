@@ -25,18 +25,18 @@ class Follower:
         self.rate = rospy.Rate(10) # 10Hz
 
 
-        self.state = [2, 2, 2]
+        self.state = (2, 2, 2)
         self.current_subs = [2, 2, 2]
 
         # Set thresholds
-        self.thresh = {0: [0.5, 2.0],
-                       1: [1.0, 1.5],
-                       2: [0.5, 1.25]}
+        self.thresh = {0: [0.5, 1.0],
+                       1: [0.5, 1.5],
+                       2: [0.25, 0.5]}
 
         # Set poses
-        self.pose_dict = {0: (0, 1, 0.5),
-                          1: (0, 1, 0),
-                          2: (0, 1, -0.5)}
+        self.pose_dict = {0: (0, 2, 5),
+                          1: (0, 2, 0),
+                          2: (0, 2, -5)}
 
         # Initialize Q-table
         substates = [0, 1, 2]  # close, mid, far
@@ -74,15 +74,13 @@ class Follower:
         dists = [left, front, right]
         self.current_subs = [2, 2, 2]
 
-        print "dists: ", dists
-
         for t, source in enumerate(dists):
             for bound in range(len(self.thresh[0])):
                 if source <= self.thresh[t][bound]:
                     self.current_subs[t] = bound
                     break
 
-        print "current_subs: ", current_subs
+        self.state = tuple(self.current_subs)
 
     def get_pose(self, action):
         pose =  Pose2D()
@@ -96,7 +94,7 @@ class Follower:
 
     def follow(self):
         while not rospy.is_shutdown():
-            print self.state, self.current_subs
+            print self.current_subs
             next_action = 1
             max_value = 0
 
