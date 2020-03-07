@@ -74,11 +74,15 @@ class Follower:
         dists = [left, front, right]
         self.current_subs = [2, 2, 2]
 
-        for t, (source, dest) in enumerate(zip(dists, self.current_subs)):
+        print "dists: ", dists
+
+        for t, source in enumerate(dists):
             for bound in range(len(self.thresh[0])):
                 if source <= self.thresh[t][bound]:
                     self.current_subs[t] = bound
                     break
+
+        print "current_subs: ", current_subs
 
     def get_pose(self, action):
         pose =  Pose2D()
