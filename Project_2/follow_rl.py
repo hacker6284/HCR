@@ -63,7 +63,9 @@ class Follower:
         states = [s for s in product(substates, repeat=3)]
 
         # Hyperparameters
-        self.epsilon = 0.7
+        self.epsilon = 0.3
+        self.initial_epsilon = 0.3
+        self.epsilon_decay = 0.99
         self.alpha = 0.8
         self.gamma = 0.5
 
@@ -189,6 +191,7 @@ class Follower:
                           + '/q_table.pickle', 'wb') as file:
                     pickle.dump(follower.q_table, file)
                 self.episodes += 1
+                self.epsilon = self.initial_epsilon * (self.epsilon_decay ** episode)
                 self.reset_world()
                 self.need_reset = False
                 self.consecutive_stuck = 0
