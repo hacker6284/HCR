@@ -180,13 +180,12 @@ class Follower:
 
             self.unpause_physics
 
-            if self.episodes % 100 == 0:
-                print self.episodes
-
             if self.episodes > 10000:
                 return
 
             if self.need_reset:
+                if self.episodes % 100 == 0:
+                    print self.episodes
                 with open(os.path.abspath(os.path.dirname( __file__ ))
                           + '/q_table.pickle', 'wb') as file:
                     pickle.dump(follower.q_table, file)
