@@ -177,6 +177,9 @@ class Follower:
             self.take_action(next_action)
             self.rate.sleep()
             self.update_q(self.calculate_reward())
+            with open(os.path.abspath(os.path.dirname( __file__ ))
+                      + '/q_table.pickle', 'wb') as file:
+                pickle.dump(follower.q_table, file)
             self.episodes += 1
 
             if self.episodes % 100 == 0:
@@ -226,9 +229,6 @@ if __name__ == "__main__":
 
     if choice == 1:
         follower.train_follow()
-        with open(os.path.abspath(os.path.dirname( __file__ ))
-                  + '/q_table.pickle', 'wb') as file:
-            pickle.dump(follower.q_table, file)
     else:
         try:
             with open(os.path.abspath(os.path.dirname( __file__ ))
