@@ -208,13 +208,13 @@ class Follower:
         return next_action
 
     def update_q(self, reward=0):
-        current = self.q_table[(self.previous_state, self.taken_action)]
+        current = self.q_table[(self.previous_state, self.action_taken)]
         best = max(pair for pair in self.q_table if pair[0] == self.state,
                    key=q_table.get)
 
         updated = current + alpha * (reward + (gamma * best) - current)
 
-        self.q_table[(self.previous_state, self.taken_action)] = updated
+        self.q_table[(self.previous_state, self.action_taken)] = updated
 
 
 if __name__ == "__main__":
