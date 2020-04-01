@@ -198,7 +198,7 @@ class Follower:
 
         for pair in self.q_table.keys():
             if pair[0] == self.state:
-                options.append(pair: self.q_table[pair])
+                options[pair] = self.q_table[pair])
 
         if random.random() < self.epsilon:
             next_action = max(options, key=options.get)[1]
