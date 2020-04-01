@@ -190,7 +190,7 @@ class Follower:
                           + '/q_table.pickle', 'wb') as file:
                     pickle.dump(follower.q_table, file)
                 self.episodes += 1
-                self.epsilon = self.initial_epsilon * (self.epsilon_decay ** episode)
+                self.epsilon = self.initial_epsilon * (1 -(self.epsilon_decay ** episode))
                 self.reset_world()
                 self.need_reset = False
                 self.consecutive_stuck = 0
