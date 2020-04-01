@@ -61,9 +61,9 @@ class Follower:
         states = [s for s in product(substates, repeat=3)]
 
         # Hyperparameters
-        epsilon = 0.7
-        alpha = 0.8
-        gamma = 0.5
+        self.epsilon = 0.7
+        self.alpha = 0.8
+        self.gamma = 0.5
 
         # Define values for operations
         dodge = 5
