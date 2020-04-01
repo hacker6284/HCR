@@ -73,16 +73,8 @@ class Follower:
 
         self.q_table = {(s, a): 0 for a in actions for s in states}
         for pair in self.q_table.keys():
-            if pair[0][1] < 2 and pair[1] == 0:
-                self.q_table[pair] = dodge
             if pair[0][2] == 1 and pair[1] == 1:
                 self.q_table[pair] = stay
-            if pair[0][2] == 2 and pair[1] == 2:
-                self.q_table[pair] = approach
-            if pair[0][2] == 0 and pair[1] == 0:
-                self.q_table[pair] = avoid
-            if pair[0][0] == 0 and pair[1] == 2:
-                self.q_table[pair] = avoid
             if pair[0][0] == 2 and pair[0][1] == 2 and pair[0][2] == 2:
                 self.q_table[pair] = stay
 
@@ -109,6 +101,8 @@ class Follower:
 
         point = data.pose[1].position
 
+        print(point.z)
+
         if point.z > 0.1:
             self.need_reset = True
             return
@@ -123,6 +117,8 @@ class Follower:
 
         if self.consecutive_stuck > self.consecutive_thresh:
             self.need_reset = True
+
+        self.point = point
 
 
 
@@ -208,13 +204,13 @@ class Follower:
         return next_action
 
     def update_q(self, reward=0):
-        current = self.q_table[(self.previous_state, self.taken_action)]
+        current = self.q_table[(self.previous_state, self.action_taken)]
         best = max([pair for pair in self.q_table if pair[0] == self.state],
-                   key=q_table.get)
+                   key=self.q_table.get)
 
-        updated = current + alpha * (reward + (gamma * best) - current)
+        updated = current + self.alpha * (reward + (self.gamma * self.q_table[best]) - current)
 
-        self.q_table[(self.previous_state, self.taken_action)] = updated
+        self.q_table[(self.previous_state, self.action_taken)] = updated
 
 
 if __name__ == "__main__":
