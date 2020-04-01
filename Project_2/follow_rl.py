@@ -29,6 +29,8 @@ class Follower:
                                    Pose2D, queue_size=10)
         self.model_sub = rospy.Subscriber('/gazebo/model_states', ModelStates, self.check_model)
         self.reset_world = rospy.ServiceProxy('/gazebo/reset_world', Empty)
+        self.pause_physics = rospy.ServiceProxy('/gazebo/pause_physics', Empty)
+        self.unpause_physics = rospy.ServiceProxy('/gazebo/unpause_physics', Empty)
 
         self.rate = rospy.Rate(10) # 10Hz
 
@@ -167,6 +169,8 @@ class Follower:
             next_action = 1
             max_value = 0
 
+            self.pause_physics
+
             for pair in self.q_table.keys():
                 if pair[0] == self.state and self.q_table[pair] > max_value:
                     next_action = pair[1]
@@ -181,6 +185,8 @@ class Follower:
                       + '/q_table.pickle', 'wb') as file:
                 pickle.dump(follower.q_table, file)
             self.episodes += 1
+
+            self.unpause_physics
 
             if self.episodes % 100 == 0:
                 print self.episodes
