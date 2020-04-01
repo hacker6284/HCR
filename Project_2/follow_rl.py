@@ -103,8 +103,6 @@ class Follower:
 
         point = data.pose[1].position
 
-        print(point.z)
-
         if point.z > 0.1:
             self.need_reset = True
             return
@@ -177,20 +175,20 @@ class Follower:
             self.take_action(next_action)
             self.rate.sleep()
             self.update_q(self.calculate_reward())
-            with open(os.path.abspath(os.path.dirname( __file__ ))
-                      + '/q_table.pickle', 'wb') as file:
-                pickle.dump(follower.q_table, file)
-            self.episodes += 1
 
             self.unpause_physics
 
             if self.episodes % 100 == 0:
                 print self.episodes
 
-            if self.episodes > 1000:
+            if self.episodes > 10000:
                 return
 
             if self.need_reset:
+                with open(os.path.abspath(os.path.dirname( __file__ ))
+                          + '/q_table.pickle', 'wb') as file:
+                    pickle.dump(follower.q_table, file)
+                self.episodes += 1
                 self.reset_world()
                 self.need_reset = False
                 self.consecutive_stuck = 0
