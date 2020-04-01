@@ -118,7 +118,7 @@ class Follower:
             self.point = point
             return
 
-        if np.allclose((self.point, point, self.same_state_thresh, 0)):
+        if np.allclose(self.point, point, self.same_state_thresh, 0):
             self.consecutive_stuck += 1
 
         if self.consecutive_stuck > self.consecutive_thresh:
@@ -198,7 +198,7 @@ class Follower:
 
         for pair in self.q_table.keys():
             if pair[0] == self.state:
-                options[pair] = self.q_table[pair])
+                options[pair] = self.q_table[pair]
 
         if random.random() < self.epsilon:
             next_action = max(options, key=options.get)[1]
@@ -209,7 +209,7 @@ class Follower:
 
     def update_q(self, reward=0):
         current = self.q_table[(self.previous_state, self.taken_action)]
-        best = max(pair for pair in self.q_table if pair[0] == self.state,
+        best = max([pair for pair in self.q_table if pair[0] == self.state],
                    key=q_table.get)
 
         updated = current + alpha * (reward + (gamma * best) - current)
