@@ -38,8 +38,8 @@ class Follower:
         self.episodes = 0
         self.need_reset = False
         self.point = None
-        self.same_state_thresh = 0.01
-        self.consecutive_thresh = 10
+        self.same_state_thresh = 0.001
+        self.consecutive_thresh = 20
 
         self.state = (2, 2, 2)
         self.current_subs = [2, 2, 2]
@@ -63,11 +63,11 @@ class Follower:
         states = [s for s in product(substates, repeat=3)]
 
         # Hyperparameters
-        self.epsilon = 0.3
-        self.initial_epsilon = 0.3
+        self.epsilon = 0
+        self.initial_epsilon = 0.9
         self.epsilon_decay = 0.99
-        self.alpha = 0.8
-        self.gamma = 0.5
+        self.alpha = 0.2
+        self.gamma = 0.8
 
         # Define values for operations
         dodge = 5
@@ -77,8 +77,16 @@ class Follower:
 
         self.q_table = {(s, a): 0 for a in actions for s in states}
         for pair in self.q_table.keys():
+            if pair[0][1] < 2 and pair[1] == 0:
+                self.q_table[pair] = dodge
             if pair[0][2] == 1 and pair[1] == 1:
                 self.q_table[pair] = stay
+            if pair[0][2] == 2 and pair[1] == 2:
+                self.q_table[pair] = approach
+            if pair[0][2] == 0 and pair[1] == 0:
+                self.q_table[pair] = avoid
+            if pair[0][0] == 0 and pair[1] == 2:
+                self.q_table[pair] = avoid
             if pair[0][0] == 2 and pair[0][1] == 2 and pair[0][2] == 2:
                 self.q_table[pair] = stay
 
@@ -106,6 +114,7 @@ class Follower:
         point = data.pose[1].position
 
         if point.z > 0.1:
+            # print "Got too high"
             self.need_reset = True
             return
 
@@ -114,11 +123,13 @@ class Follower:
             self.point = point
             return
 
-        if np.allclose(self.point, point, self.same_state_thresh, 0):
+        if np.allclose(self.point, point, 0, self.same_state_thresh):
             self.consecutive_stuck += 1
 
         if self.consecutive_stuck > self.consecutive_thresh:
+            # print "too many consecutive similar"
             self.need_reset = True
+            self.consecutive_stuck = 0
 
         self.point = point
 
@@ -126,11 +137,12 @@ class Follower:
 
     def calculate_reward(self):
         reward = 0
-        if 0 in self.state:
+        if self.state[0] == 0 or self.state[1] == 0:
             reward = -1
-        if self.state[2] == 2:
-            reward = -1
+        if self.state[2] == 1 and self.state[1] != 0:
+            reward = 1
 
+        print reward
         return reward
 
     def get_pose(self, action):
@@ -190,7 +202,8 @@ class Follower:
                           + '/q_table.pickle', 'wb') as file:
                     pickle.dump(follower.q_table, file)
                 self.episodes += 1
-                self.epsilon = self.initial_epsilon * (1 -(self.epsilon_decay ** episode))
+                self.epsilon = self.initial_epsilon * (1 -(self.epsilon_decay ** self.episodes))
+                print self.epsilon
                 self.reset_world()
                 self.need_reset = False
                 self.consecutive_stuck = 0
