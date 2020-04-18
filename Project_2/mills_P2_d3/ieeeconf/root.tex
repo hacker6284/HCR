@@ -72,156 +72,56 @@ In order to define a finite number of states that could be used by the algorithm
 
 There were many possible ways to define actions, but, in order to keep it simple, I chose to only implement 3 possible actions for the robot. The first action is driving straight forward, which consists of giving the robot a positive y velocity and zero velocity in the x direction. The second and third actions are driving to the left and the right. Because I wanted the robot to always be moving, I chose to make these actions turn while driving, and not turn in place. I did this in hopes that it would prevent the robot from simply spinning in place forever. To implement the turn left action, I provide the robot a positive velocity in the y direction as well as a positive angular velocity. The turn right action similarly consists of a positive velocity in the y direction, but has a negative angular velocity. These actions are enumerated as 0 (turn left), 1 (drive straight), and 2 (turn right). They are enumerated this way for consistency with the enumeration of the states and substates. These actions will later be used in the Q-table with the states.
 
-\subsection{Rewards} The rewards of my Q-learning algorithm are defined in terms of the sensor readings of the robot, just like the states. 
+\subsection{Rewards} The rewards of my Q-learning algorithm are defined in terms of the sensor readings of the robot, just like the states. By default, all combinations of substates give a reward of 0, but each time the robot checks to see if it gets a reward, certain states are rewarded or punished based on the status of one or more of the substates that make them up.
+For example, any state where the left substate is 0, meaning the robot is close to a wall on its left, or the front substate is 0, meaning it is close to a wall on the front, is given a punishment with a reward of -1. Next, any state where the right substate is 1, representing a medium distance, and the front is not 0, representing a close distance, is given a reward value of 1. This encourages the robot to stay close to the right wall, but not get close to other walls. The front wall is especially important to avoid, because the robot is always moving forward, so colliding forwards is the worst situation it can get into. These rewards are also used in the Q-table
 
-\subsection{Units}
-
-\begin{itemize}
-
-\item Use either SI (MKS) or CGS as primary units. (SI units are encouraged.) English units may be used as secondary units (in parentheses). An exception would be the use of English units as identifiers in trade, such as �3.5-inch disk drive�.
-\item Avoid combining SI and CGS units, such as current in amperes and magnetic field in oersteds. This often leads to confusion because equations do not balance dimensionally. If you must use mixed units, clearly state the units for each quantity that you use in an equation.
-\item Do not mix complete spellings and abbreviations of units: �Wb/m2� or �webers per square meter�, not �webers/m2�.  Spell out units when they appear in text: �. . . a few henries�, not �. . . a few H�.
-\item Use a zero before decimal points: �0.25�, not �.25�. Use �cm3�, not �cc�. (bullet list)
-
-\end{itemize}
-
-
-\subsection{Equations}
-
-The equations are an exception to the prescribed specifications of this template. You will need to determine whether or not your equation should be typed using either the Times New Roman or the Symbol font (please no other font). To create multileveled equations, it may be necessary to treat the equation as a graphic and insert it into the text after your paper is styled. Number equations consecutively. Equation numbers, within parentheses, are to position flush right, as in (1), using a right tab stop. To make your equations more compact, you may use the solidus ( / ), the exp function, or appropriate exponents. Italicize Roman symbols for quantities and variables, but not Greek symbols. Use a long dash rather than a hyphen for a minus sign. Punctuate equations with commas or periods when they are part of a sentence, as in
-
-$$
-\alpha + \beta = \chi \eqno{(1)}
-$$
-
-Note that the equation is centered using a center tab stop. Be sure that the symbols in your equation have been defined before or immediately following the equation. Use �(1)�, not �Eq. (1)� or �equation (1)�, except at the beginning of a sentence: �Equation (1) is . . .�
-
-\subsection{Some Common Mistakes}
-\begin{itemize}
-
-
-\item The word �data� is plural, not singular.
-\item The subscript for the permeability of vacuum ?0, and other common scientific constants, is zero with subscript formatting, not a lowercase letter �o�.
-\item In American English, commas, semi-/colons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
-\item A graph within a graph is an �inset�, not an �insert�. The word alternatively is preferred to the word �alternately� (unless you really mean something that alternates).
-\item Do not use the word �essentially� to mean �approximately� or �effectively�.
-\item In your paper title, if the words �that uses� can accurately replace the word �using�, capitalize the �u�; if not, keep using lower-cased.
-\item Be aware of the different meanings of the homophones �affect� and �effect�, �complement� and �compliment�, �discreet� and �discrete�, �principal� and �principle�.
-\item Do not confuse �imply� and �infer�.
-\item The prefix �non� is not a word; it should be joined to the word it modifies, usually without a hyphen.
-\item There is no period after the �et� in the Latin abbreviation �et al.�.
-\item The abbreviation �i.e.� means �that is�, and the abbreviation �e.g.� means �for example�.
-
-\end{itemize}
-
-
-\section{USING THE TEMPLATE}
-
-Use this sample document as your LaTeX source file to create your document. Save this file as {\bf root.tex}. You have to make sure to use the cls file that came with this distribution. If you use a different style file, you cannot expect to get required margins. Note also that when you are creating your out PDF file, the source file is only part of the equation. {\it Your \TeX\ $\rightarrow$ PDF filter determines the output file size. Even if you make all the specifications to output a letter file in the source - if your filter is set to produce A4, you will only get A4 output. }
-
-It is impossible to account for all possible situation, one would encounter using \TeX. If you are using multiple \TeX\ files you must make sure that the ``MAIN`` source file is called root.tex - this is particularly important if your conference is using PaperPlaza's built in \TeX\ to PDF conversion tool.
-
-\subsection{Headings, etc}
-
-Text heads organize the topics on a relational, hierarchical basis. For example, the paper title is the primary text head because all subsequent material relates and elaborates on this one topic. If there are two or more sub-topics, the next level head (uppercase Roman numerals) should be used and, conversely, if there are not at least two sub-topics, then no subheads should be introduced. Styles named �Heading 1�, �Heading 2�, �Heading 3�, and �Heading 4� are prescribed.
-
-\subsection{Figures and Tables}
-
-Positioning Figures and Tables: Place figures and tables at the top and bottom of columns. Avoid placing them in the middle of columns. Large figures and tables may span across both columns. Figure captions should be below the figures; table heads should appear above the tables. Insert figures and tables after they are cited in the text. Use the abbreviation �Fig. 1�, even at the beginning of a sentence.
-
-\begin{table}[h]
-\caption{An Example of a Table}
-\label{table_example}
-\begin{center}
-\begin{tabular}{|c||c|}
-\hline
-One & Two\\
-\hline
-Three & Four\\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-
-
-   \begin{figure}[thpb]
-      \centering
-      \framebox{\parbox{3in}{We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.
-}}
-      %\includegraphics[scale=1.0]{figurefile}
-      \caption{Inductance of oscillation winding on amorphous
-       magnetic core versus DC bias magnetic field}
-      \label{figurelabel}
-   \end{figure}
-
-
-Figure Labels: Use 8 point Times New Roman for Figure labels. Use words rather than symbols or abbreviations when writing Figure axis labels to avoid confusing the reader. As an example, write the quantity �Magnetization�, or �Magnetization, M�, not just �M�. If including units in the label, present them within parentheses. Do not label axes only with units. In the example, write �Magnetization (A/m)� or �Magnetization {A[m(1)]}�, not just �A/m�. Do not label axes with a ratio of quantities and units. For example, write �Temperature (K)�, not �Temperature/K.�
-
-\section{CONCLUSIONS}
-
-A conclusion section is not required. Although a conclusion may review the main points of the paper, do not replicate the abstract as the conclusion. A conclusion might elaborate on the importance of the work or suggest applications and extensions.
-
-\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
+\addtolength{\textheight}{-10cm}   % This command serves to balance the column lengths
                                   % on the last page of the document manually. It shortens
                                   % the textheight of the last page by a suitable amount.
                                   % This command does not take effect until the next page
                                   % so it should come on the page before the last. Make
                                   % sure that you do not shorten the textheight too much.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Q-table}
+
+\subsection{Definition}
+
+My Q-table is defined as a dictionary where the value is the Q-value for a particular state-action pair. The key to this dictionary is a tuple, where the first value is the state (also represented as a tuple), and the second value is the action. This means the dictionary keys follow a format similar to ((0, 1, 2), 2), which in this case would represent turning right when you are close to a wall on the left, a medium distance from a wall in front, and far from a wall on the right.
+
+\subsection {Initialization}
+
+Initially, a looping structure is used to set the Q-value for all state-action pairs to 0. Then, the prior knowledge is added. This prior knowledge is equivalent to the Q-table that I designed in D1, which allowed the robot to make correct decisions for at least one example of each type of situation in the maze. The prior knowledge provides incentives for the robot to approach the right wall when it is too far, avoid the right wall when it is too close, avoid the left wall when it is too close, and to turn left when the front wall is too close. It also incentivizes going straight when the right wall is a medium distance and neither of the other readings are too close. I decided that using the full Q-table from my D1 as prior knowledge for the robot would give it the best chance of successfully learning the maze.
 
 
+\section{Model Parameters}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Epsilon, \epsilon}
 
+In my algorithm, $\epsilon$ represents the probability that any given decision will be made according to the Q-table, which is the inverse of the probability that the decision will be made randomly. $\epsilon$ starts out very low in my algorithm, very close to 0 in fact, but it quickly approaches 0.9 with an inverse exponential function each episode. Eventually, the robot will be making random decisions only ten percent of the time in training.
 
+\subsection{Learning Rate, \alpha}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{APPENDIX}
+The learning rate, $\alpha$, in my algorithm is equal to 0.2
 
-Appendixes should appear before the acknowledgment.
+\subsection{Discount Factor, $\gamma$}
 
-\section*{ACKNOWLEDGMENT}
+The discount factor, $\gamma$, in my algorithm is equal to 0.8
 
-The preferred spelling of the word �acknowledgment� in America is without an �e� after the �g�. Avoid the stilted expression, �One of us (R. B. G.) thanks . . .�  Instead, try �R. B. G. thanks�. Put sponsor acknowledgments in the unnumbered footnote on the first page.
+\section{Training}
 
+\subsection{Episodes}
 
+My algorithm generally required far more episodes than I had hoped, around 500 episodes, before it started to perform adequately. Even with significantly more than that, around 2000, it never became perfect.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Time}
 
-References are important to the reader; therefore, each citation must be complete and correct. If at all possible, references should be commonly available publications.
+The time required by each episode tended to increase as the training process went on, so 500 episodes could take quite a while. Generally, my algorithm was able to get to 500 episodes in a round an hour.
 
+\section{Performance}
 
-
-\begin{thebibliography}{99}
-
-\bibitem{c1} G. O. Young, �Synthetic structure of industrial plastics (Book style with paper title and editor),� 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 15�64.
-\bibitem{c2} W.-K. Chen, Linear Networks and Systems (Book style).	Belmont, CA: Wadsworth, 1993, pp. 123�135.
-\bibitem{c3} H. Poor, An Introduction to Signal Detection and Estimation.   New York: Springer-Verlag, 1985, ch. 4.
-\bibitem{c4} B. Smith, �An approach to graphs of linear forms (Unpublished work style),� unpublished.
-\bibitem{c5} E. H. Miller, �A note on reflector arrays (Periodical style�Accepted for publication),� IEEE Trans. Antennas Propagat., to be publised.
-\bibitem{c6} J. Wang, �Fundamentals of erbium-doped fiber amplifiers arrays (Periodical style�Submitted for publication),� IEEE J. Quantum Electron., submitted for publication.
-\bibitem{c7} C. J. Kaufman, Rocky Mountain Research Lab., Boulder, CO, private communication, May 1995.
-\bibitem{c8} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, �Electron spectroscopy studies on magneto-optical media and plastic substrate interfaces(Translation Journals style),� IEEE Transl. J. Magn.Jpn., vol. 2, Aug. 1987, pp. 740�741 [Dig. 9th Annu. Conf. Magnetics Japan, 1982, p. 301].
-\bibitem{c9} M. Young, The Techincal Writers Handbook.  Mill Valley, CA: University Science, 1989.
-\bibitem{c10} J. U. Duncombe, �Infrared navigation�Part I: An assessment of feasibility (Periodical style),� IEEE Trans. Electron Devices, vol. ED-11, pp. 34�39, Jan. 1959.
-\bibitem{c11} S. Chen, B. Mulgrew, and P. M. Grant, �A clustering technique for digital communications channel equalization using radial basis function networks,� IEEE Trans. Neural Networks, vol. 4, pp. 570�578, July 1993.
-\bibitem{c12} R. W. Lucky, �Automatic equalization for digital communication,� Bell Syst. Tech. J., vol. 44, no. 4, pp. 547�588, Apr. 1965.
-\bibitem{c13} S. P. Bingulac, �On the compatibility of adaptive controllers (Published Conference Proceedings style),� in Proc. 4th Annu. Allerton Conf. Circuits and Systems Theory, New York, 1994, pp. 8�16.
-\bibitem{c14} G. R. Faulhaber, �Design of service systems with priority reservation,� in Conf. Rec. 1995 IEEE Int. Conf. Communications, pp. 3�8.
-\bibitem{c15} W. D. Doyle, �Magnetization reversal in films with biaxial anisotropy,� in 1987 Proc. INTERMAG Conf., pp. 2.2-1�2.2-6.
-\bibitem{c16} G. W. Juette and L. E. Zeffanella, �Radio noise currents n short sections on bundle conductors (Presented Conference Paper style),� presented at the IEEE Summer power Meeting, Dallas, TX, June 22�27, 1990, Paper 90 SM 690-0 PWRS.
-\bibitem{c17} J. G. Kreifeldt, �An analysis of surface-detected EMG as an amplitude-modulated noise,� presented at the 1989 Int. Conf. Medicine and Biological Engineering, Chicago, IL.
-\bibitem{c18} J. Williams, �Narrow-band analyzer (Thesis or Dissertation style),� Ph.D. dissertation, Dept. Elect. Eng., Harvard Univ., Cambridge, MA, 1993.
-\bibitem{c19} N. Kawasaki, �Parametric study of thermal and chemical nonequilibrium nozzle flow,� M.S. thesis, Dept. Electron. Eng., Osaka Univ., Osaka, Japan, 1993.
-\bibitem{c20} J. P. Wilkinson, �Nonlinear resonant circuit devices (Patent style),� U.S. Patent 3 624 12, July 16, 1990.
+My robot never became very good at the maze, and it generally crashed before encountering all of the 5 situations described in the project assignment. However, it was very good at the 180 degree turns, and almost always got out of them. The hardest part to get right was turning around corners, because I had chosen not to implement a sensor that sensed right-forward. That said, my final implementation was successfully able to navigate the 180 degree turns around I-shaped corners. The biggest problem with my robot was that it had a tendency to turn toward a wall it is following randomly. I am not sure what its sensors were seeing that caused it to do this, and this part of its training was definitly given a punishment by the reward system, so I am not sure why it learned to do this. This is what causes my robot to not be able to complete the maze.
 
 
-
-
-
-
-\end{thebibliography}
 
 
 
