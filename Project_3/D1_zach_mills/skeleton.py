@@ -18,8 +18,7 @@ def read_dir(path, sep):
     or `dataset/train/*.txt`
     """
     names = [str(i) for i in range(1, 6)]
-    nums = [int(f.split('/')[-1].split('_')[0][1:]) for f in glob(path)]
-    return nums, [pd.read_csv(f, sep=sep, names=names) for f in glob(path)]
+    return [pd.read_csv(f, sep=sep, names=names) for f in glob(path)]
 
 
 def get_dists(locs, center):
@@ -96,20 +95,10 @@ def get_custom(dataframe):
     return analyze_action(dataframe, joints, center, edges)
 
 
-def convert_line(line, c):
-    """Convert one histogram line into a LIBSVM line."""
-    return ' '.join([str(c)] + [f'{i}:{n}' for i, n in enumerate(line)])
-
-
-def reformat(hist_lines, class_names):
-    """Reformat histogram file into LIBSVM format."""
-    return [convert_line(l, c) for l, c in zip(hist_lines, class_names)]
-
-
 def main():
     """Build representation from files."""
-    train_class, train_frames = read_dir('dataset/train/*.txt', ' ')
-    test_class, test_frames = read_dir('dataset/test/*.txt', ' ')
+    train_frames = read_dir('dataset/train/*.txt', ' ')
+    test_frames = read_dir('dataset/test/*.txt', ' ')
 
     rad_d1 = [get_rad(action) for action in train_frames]
     rad_d1_t = [get_rad(action) for action in test_frames]
@@ -126,22 +115,6 @@ def main():
         f.writelines([' '.join(line) + '\n' for line in cust_d1])
     with open('cust_d1.t', 'w') as f:
         f.writelines([' '.join(line) + '\n' for line in cust_d1_t])
-
-    rad_d2 = reformat(rad_d1, train_class)
-    rad_d2_t = reformat(rad_d1_t, test_class)
-
-    cust_d2 = reformat(cust_d1, train_class)
-    cust_d2_t = reformat(cust_d1_t, test_class)
-
-    with open('rad_d2', 'w') as f:
-        f.writelines([' '.join(line) + '\n' for line in rad_d2])
-    with open('rad_d2.t', 'w') as f:
-        f.writelines([' '.join(line) + '\n' for line in rad_d2_t])
-
-    with open('cust_d2', 'w') as f:
-        f.writelines([' '.join(line) + '\n' for line in cust_d2])
-    with open('cust_d2.t', 'w') as f:
-        f.writelines([' '.join(line) + '\n' for line in cust_d2_t])
 
 
 if __name__ == "__main__":
